@@ -1,0 +1,72 @@
+{
+  "format_version": 1,
+  "desktop": "xfce",
+  "created_at": "2026-10-28T08:59:34.906123+00:00",
+  "shortcuts": [
+    {
+      "group": "commands",
+      "key": "<Alt>F1",
+      "command": "xfce4-popup-whiskermenu"
+    },
+    {
+      "group": "commands",
+      "key": "<Primary><Alt>comma",
+      "command": "${HOME}/.local/bin/music prev"
+    },
+    {
+      "group": "commands",
+      "key": "<Primary><Alt>m",
+      "command": "${HOME}/.local/bin/music ui-toggle"
+    },
+    {
+      "group": "commands",
+      "key": "<Primary><Alt>o",
+      "command": "${HOME}/.local/bin/music toggle"
+    },
+    {
+      "group": "commands",
+      "key": "<Primary><Alt>period",
+      "command": "${HOME}/.local/bin/music next"
+    },
+    {
+      "group": "commands",
+      "key": "<Primary><Alt>w",
+      "command": "${HOME}/.local/bin/wechat-show"
+    },
+    {
+      "group": "commands",
+      "key": "<Primary><Shift>a",
+      "command": "flameshot gui  "
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>Down",
+      "command": "hide_window_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>Up",
+      "command": "maximize_window_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Shift><Control><Alt>Down",
+      "command": "move_window_down_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Shift><Control><Alt>Left",
+      "command": "move_window_left_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Shift><Control><Alt>Right",
+      "command": "move_window_right_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Shift><Control><Alt>Up",
+      "command": "move_window_up_workspace_key"
+    }
+  ]
+}
