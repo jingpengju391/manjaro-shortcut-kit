@@ -1,7 +1,9 @@
 {
   "format_version": 1,
   "desktop": "xfce",
-  "created_at": "2026-10-28T08:59:34.906123+00:00",
+  "scope": "all",
+  "super_tap": "Super_L=Alt_L|F1",
+  "created_at": "2026-10-29T04:07:29.748483+00:00",
   "shortcuts": [
     {
       "group": "commands",
@@ -10,8 +12,38 @@
     },
     {
       "group": "commands",
+      "key": "<Alt>F2",
+      "command": "xfce4-appfinder --collapsed"
+    },
+    {
+      "group": "commands",
+      "key": "<Alt>F3",
+      "command": "xfce4-appfinder"
+    },
+    {
+      "group": "commands",
+      "key": "<Alt>Print",
+      "command": "xfce4-screenshooter -w"
+    },
+    {
+      "group": "commands",
+      "key": "<Primary><Alt>Delete",
+      "command": "xfce4-session-logout"
+    },
+    {
+      "group": "commands",
+      "key": "<Primary><Alt>Escape",
+      "command": "xkill"
+    },
+    {
+      "group": "commands",
       "key": "<Primary><Alt>comma",
       "command": "${HOME}/.local/bin/music prev"
+    },
+    {
+      "group": "commands",
+      "key": "<Primary><Alt>l",
+      "command": "xflock4"
     },
     {
       "group": "commands",
@@ -30,13 +62,138 @@
     },
     {
       "group": "commands",
+      "key": "<Primary><Alt>t",
+      "command": "exo-open --launch TerminalEmulator"
+    },
+    {
+      "group": "commands",
       "key": "<Primary><Alt>w",
       "command": "${HOME}/.local/bin/wechat-show"
     },
     {
       "group": "commands",
+      "key": "<Primary><Shift>Escape",
+      "command": "xfce4-taskmanager"
+    },
+    {
+      "group": "commands",
       "key": "<Primary><Shift>a",
       "command": "flameshot gui  "
+    },
+    {
+      "group": "commands",
+      "key": "<Primary>Escape",
+      "command": "xfdesktop --menu"
+    },
+    {
+      "group": "commands",
+      "key": "<Shift>Print",
+      "command": "xfce4-screenshooter -r"
+    },
+    {
+      "group": "commands",
+      "key": "<Super>e",
+      "command": "thunar"
+    },
+    {
+      "group": "commands",
+      "key": "<Super>p",
+      "command": "xfce4-display-settings --minimal"
+    },
+    {
+      "group": "commands",
+      "key": "<Super>r",
+      "command": "xfce4-appfinder -c"
+    },
+    {
+      "group": "commands",
+      "key": "HomePage",
+      "command": "exo-open --launch WebBrowser"
+    },
+    {
+      "group": "commands",
+      "key": "Print",
+      "command": "xfce4-screenshooter"
+    },
+    {
+      "group": "commands",
+      "key": "XF86Display",
+      "command": "xfce4-display-settings --minimal"
+    },
+    {
+      "group": "commands",
+      "key": "XF86Mail",
+      "command": "exo-open --launch MailReader"
+    },
+    {
+      "group": "commands",
+      "key": "XF86WWW",
+      "command": "exo-open --launch WebBrowser"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>End",
+      "command": "move_window_next_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>Home",
+      "command": "move_window_prev_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>KP_1",
+      "command": "move_window_workspace_1_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>KP_2",
+      "command": "move_window_workspace_2_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>KP_3",
+      "command": "move_window_workspace_3_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>KP_4",
+      "command": "move_window_workspace_4_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>KP_5",
+      "command": "move_window_workspace_5_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>KP_6",
+      "command": "move_window_workspace_6_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>KP_7",
+      "command": "move_window_workspace_7_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>KP_8",
+      "command": "move_window_workspace_8_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Control>KP_9",
+      "command": "move_window_workspace_9_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt><Shift>Tab",
+      "command": "cycle_reverse_windows_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>Delete",
+      "command": "del_workspace_key"
     },
     {
       "group": "xfwm4",
@@ -45,8 +202,163 @@
     },
     {
       "group": "xfwm4",
+      "key": "<Alt>F11",
+      "command": "fullscreen_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>F12",
+      "command": "above_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>F4",
+      "command": "close_window_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>F6",
+      "command": "stick_window_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>F7",
+      "command": "move_window_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>F8",
+      "command": "resize_window_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>Insert",
+      "command": "add_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>Tab",
+      "command": "cycle_windows_key"
+    },
+    {
+      "group": "xfwm4",
       "key": "<Alt>Up",
       "command": "maximize_window_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Alt>space",
+      "command": "popup_menu_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control><Alt>Down",
+      "command": "down_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control><Alt>Left",
+      "command": "left_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control><Alt>Right",
+      "command": "right_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control><Alt>Up",
+      "command": "up_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control><Alt>d",
+      "command": "show_desktop_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control><Shift><Alt>Left",
+      "command": "move_window_left_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control><Shift><Alt>Right",
+      "command": "move_window_right_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control><Shift><Alt>Up",
+      "command": "move_window_up_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F1",
+      "command": "workspace_1_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F10",
+      "command": "workspace_10_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F11",
+      "command": "workspace_11_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F12",
+      "command": "workspace_12_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F2",
+      "command": "workspace_2_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F3",
+      "command": "workspace_3_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F4",
+      "command": "workspace_4_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F5",
+      "command": "workspace_5_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F6",
+      "command": "workspace_6_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F7",
+      "command": "workspace_7_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F8",
+      "command": "workspace_8_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Control>F9",
+      "command": "workspace_9_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Shift><Alt>Page_Down",
+      "command": "lower_window_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Shift><Alt>Page_Up",
+      "command": "raise_window_key"
     },
     {
       "group": "xfwm4",
@@ -67,6 +379,36 @@
       "group": "xfwm4",
       "key": "<Shift><Control><Alt>Up",
       "command": "move_window_up_workspace_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "<Super>Tab",
+      "command": "switch_window_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "Down",
+      "command": "down_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "Escape",
+      "command": "cancel_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "Left",
+      "command": "left_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "Right",
+      "command": "right_key"
+    },
+    {
+      "group": "xfwm4",
+      "key": "Up",
+      "command": "up_key"
     }
   ]
 }

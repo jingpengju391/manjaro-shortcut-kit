@@ -1,56 +1,67 @@
-# Manjaro Shortcut Kit · 用户快捷键迁移包
+# Manjaro Shortcut Kit · 全局快捷键迁移包
 
-迁移这台 Xfce 电脑中**自己新增或改写的全局快捷键**。它不导出 Xfce 自带的默认键，因此不会把 Alt+Tab、锁屏、默认截图等系统绑定覆盖到新电脑。
+默认迁移当前 Xfce 桌面全部生效的全局快捷键，包括系统默认键、用户修改/新增的键、窗口管理器绑定和左 Win 单键菜单。旧版仅保存与默认值不同的项目，漏掉了 Ctrl+Alt+T、Win+E、Win+R 等；现在已取消该过滤。
 
-当前包内已经保存了此电脑的用户快捷键。命令中的当前用户目录会以 `${HOME}` 保存，导入新电脑时会自动替换为新电脑的实际家目录。
+## 新电脑安装 / 更新
 
-## 新电脑导入
-
-在已登录的 Xfce 桌面中运行：
+在已经登录的 Xfce 图形桌面运行（不要 sudo 整个安装器）：
 
 ```bash
 git clone https://github.com/jingpengju391/manjaro-shortcut-kit.git
 cd manjaro-shortcut-kit
-bash install.sh --check    # 只预览，不写入
-bash install.sh            # 默认保留新电脑已有的冲突绑定
-```
-
-若确认迁移包应覆盖新电脑已有的同一快捷键：
-
-```bash
+bash install.sh --check
 bash install.sh --replace
 ```
 
-每次实际导入前，目标机中将被改写的项目会保存在 `~/.local/state/manjaro-shortcut-kit/backups/`。恢复最近一次导入：
+已有项目先执行 `git pull --ff-only`。`--replace` 将迁移包中的按键设为旧电脑的对应动作，修改前自动备份。省略该参数会保留目标电脑已占用的按键，并逐项报告未迁移项目。不会删除目标电脑其他额外绑定。
+
+| 按键 | 源电脑动作 |
+| --- | --- |
+| Ctrl+Alt+T | 默认终端 |
+| Win 单键（左 Super） | 应用菜单 |
+| Win+E / Win+R | 文件管理器 / 运行程序 |
+| Alt+Tab / Alt+Shift+Tab | 切换窗口 |
+| Alt+Up / Alt+Down | 最大化 / 最小化 |
+| Print / Alt+Print / Shift+Print | 截图 / 窗口截图 / 区域截图 |
+| Ctrl+Shift+A | Flameshot |
+| Ctrl+Alt+W | 微信 |
+| Ctrl+Alt+M / O / , / . | 音乐显示、播放暂停、上一首、下一首 |
+
+完整的 81 条绑定见 `payload/user-shortcuts.json`，包含工作区切换和窗口移动快捷键。
+
+## Win 单键
+
+源电脑使用 `~/.config/autostart/xcape.desktop` 将左 Super 映射为 Alt+F1。导出时识别此设置，导入时备份并安装自启动项；**重新登录后生效**，不会启动重复 xcape 进程。
+
+若检查提示缺少 xcape，先安装：
+
+```bash
+sudo pacman -S --needed xcape
+```
+
+该机制只适用于 X11。Xfce Wayland 会明确报告无法迁移 Win 单键。
+
+## 恢复
 
 ```bash
 bash install.sh --restore
 ```
 
-本项目只迁移快捷键本身，不安装快捷键命令所调用的应用或脚本。例如微信、音乐播放器的启动命令仍需由对应的迁移包或软件安装完成。
+备份位于 `~/.local/state/manjaro-shortcut-kit/backups/`（支持 XDG_STATE_HOME），包含改动前的快捷键和 xcape 自启动文件。恢复自启动文件后需重新登录。无实际改动的 Xfce 导入不会生成空备份。
 
-## Manjaro 桌面版本兼容性
-
-| 目标版本 | 可迁移内容 | 行为 |
-| --- | --- | --- |
-| Xfce | 命令快捷键、改写过的 Xfwm 窗口快捷键 | 自动导入、冲突默认保留目标机设置 |
-| GNOME | 命令快捷键 | 自动使用 GNOME 官方的 `custom-keybindings` 接口导入；Xfwm 专属窗口动作跳过 |
-| KDE Plasma | 命令快捷键 | 由 KDE 导入助手处理；不把 Xfwm 动作伪装成 KWin 动作 |
-
-KDE 的 KGlobalAccel 必须同时注册一个常驻动作接收器，不能像 Xfce/GNOME 那样安全地只写一条“按键→shell 命令”的配置。本项目因此不会直接篡改 `kglobalshortcutsrc`；KDE 导入助手会在后续版本作为独立、可审查的用户服务提供。
-
-## 在旧电脑刷新迁移文件
-
-新增或修改快捷键后，在此仓库根目录执行：
+## 刷新源电脑快照
 
 ```bash
 python3 shortcut_kit.py export --output payload/user-shortcuts.json
 python3 -m unittest discover -s tests -v
-git add payload/user-shortcuts.json && git commit -m '更新用户快捷键'
 ```
 
-导出逻辑会将 `~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml` 与系统的 `/etc/xdg/.../xfce4-keyboard-shortcuts.xml` 比较，只保留有差异的 `commands/custom` 和 `xfwm4/custom` 项。找不到系统默认文件时会拒绝导出，而不是误将所有系统默认项打包。
+读取 Xfce 用户配置的 commands/custom、xfwm4/custom；当组未启用 custom/override 时才使用系统 default。不会把已被用户停用的默认键重新加入源快照。Win 单键设置也会检测并写入快照。若确实只需要旧版的差异导出，可指定 `--scope custom`。
 
-## 限制
+## 桌面兼容范围
 
-当前导出端面向 Manjaro/Arch 的 **Xfce**；GNOME 可作为自动导入目标。KDE 的安全导入需要常驻 KGlobalAccel 接收器，目前会明确停止而不伪造“已迁移”的结果。
+- **Xfce**：完整导入源快照的命令键、窗口管理器键；X11 支持源电脑的 Win 单键映射。
+- **GNOME**：目前仅部分命令键可导入，Ctrl+Alt+T 会选择已安装的 GNOME 终端；Xfce 专属命令和窗口动作会逐项报告未支持。Win 单键保留 GNOME 原生行为。
+- **KDE Plasma**：自动导入尚未实现，运行会明确停止。旧 README 提及的“KDE 导入助手”并不存在，不能认为已支持。
+
+本次修复验证范围是 Xfce。GNOME/KDE 仍不能完整等价恢复所有 Xfce 动作。迁移包不安装命令所需应用或脚本，微信、音乐、Flameshot 等仍需单独安装。应用内部的编辑器快捷键不属于桌面全局键，不在此包范围内。
