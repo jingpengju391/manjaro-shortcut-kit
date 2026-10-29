@@ -13,7 +13,21 @@ bash install.sh --check
 bash install.sh --replace
 ```
 
-已有项目先执行 `git pull --ff-only`。`--replace` 将迁移包中的按键设为旧电脑的对应动作，修改前自动备份。省略该参数会保留目标电脑已占用的按键，并逐项报告未迁移项目。不会删除目标电脑其他额外绑定。
+已有项目先执行 `git pull --ff-only`。`--replace` 将迁移包中的按键设为旧电脑的对应动作，修改前自动备份。对 Xfwm 窗口动作，还会清理目标电脑上同一动作的旧绑定；其他无关绑定保留。省略该参数会保留目标电脑已占用的按键及同动作旧绑定，并逐项报告冲突。
+
+### 修复 Alt+↑/↓ 无效
+
+旧版本合并配置后，可能同时留下 Alt+F10 和 Alt+↑（最大化／还原）、Alt+F9 和 Alt+↓（最小化）。Xfwm 每个动作只使用一个绑定，因此重复配置可能使方向键失效。新版通过实时 xfconf 查询发现重复项，备份后移除旧键，并重新注册迁移键。即使方向键的配置原本已经存在，也会执行修复。
+
+在目标电脑更新后运行：
+
+```bash
+git pull --ff-only
+bash install.sh --check --replace
+bash install.sh --replace
+```
+
+安装会通知正在运行的窗口管理器更新绑定；若仍无响应，注销并重新登录后再试。`bash install.sh --restore` 可恢复本次清理前的绑定。此修复针对同动作重复绑定，不代表其他 Alt 失效原因都已排除。
 
 | 按键 | 源电脑动作 |
 | --- | --- |
@@ -21,7 +35,7 @@ bash install.sh --replace
 | Win 单键（左 Super） | 应用菜单 |
 | Win+E / Win+R | 文件管理器 / 运行程序 |
 | Alt+Tab / Alt+Shift+Tab | 切换窗口 |
-| Alt+Up / Alt+Down | 最大化 / 最小化 |
+| Alt+Up / Alt+Down | 最大化与还原切换 / 最小化 |
 | Print / Alt+Print / Shift+Print | 截图 / 窗口截图 / 区域截图 |
 | Ctrl+Shift+A | Flameshot |
 | Ctrl+Alt+W | 微信 |

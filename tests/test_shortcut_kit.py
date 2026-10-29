@@ -18,6 +18,51 @@ def xml(commands, xfwm='', section='custom'):
 
 
 class ShortcutKitTests(unittest.TestCase):
+    def setUp(self):
+        patcher = patch('shortcut_kit.window_bindings', return_value={})
+        self.windows = patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_duplicate_window_action_replace_dry_run_skip_and_restore(self):
+        up = '/xfwm4/custom/<Alt>Up'
+        f10 = '/xfwm4/custom/<Alt>F10'
+        unrelated = '/xfwm4/custom/<Alt>Tab'
+        original = {up: 'maximize_window_key', f10: 'maximize_window_key',
+                    unrelated: 'cycle_windows_key', '/xfwm4/custom/override': 'true'}
+        for mode, dry_run in [('skip', False), ('replace', True), ('replace', False)]:
+            with self.subTest(mode=mode, dry_run=dry_run), tempfile.TemporaryDirectory() as folder:
+                folder = Path(folder)
+                bundle = folder/'bundle.json'
+                bundle.write_text(json.dumps({'format_version': 1, 'desktop': 'xfce', 'shortcuts': [
+                    {'group': 'xfwm4', 'key': '<Alt>Up', 'command': 'maximize_window_key'}]}))
+                live = dict(original)
+                self.windows.return_value = {up: live[up], f10: live[f10], unrelated: live[unrelated]}
+                events = []
+                def setter(path, value, value_type='string'):
+                    events.append(('set', path))
+                    live[path] = value
+                def resetter(path):
+                    events.append(('reset', path))
+                    live.pop(path, None)
+                with patch('shortcut_kit.shutil.which', return_value='/usr/bin/xfconf-query'), \
+                        patch('shortcut_kit.query', side_effect=live.get), \
+                        patch('shortcut_kit.set_value', side_effect=setter), \
+                        patch('shortcut_kit.reset', side_effect=resetter):
+                    changes, skipped, backup = kit.import_bundle(bundle, mode, dry_run, state_root=folder/'state')
+                    if mode == 'skip' or dry_run:
+                        self.assertEqual(live, original)
+                        self.assertEqual(events, [])
+                        self.assertIsNone(backup)
+                        self.assertFalse((folder/'state').exists())
+                        self.assertEqual(bool(skipped), mode == 'skip')
+                    else:
+                        self.assertNotIn(f10, live)
+                        self.assertEqual(live[up], 'maximize_window_key')
+                        self.assertEqual(live[unrelated], original[unrelated])
+                        self.assertLess(events.index(('reset', f10)), events.index(('set', up)))
+                        kit.restore(backup)
+                        self.assertEqual(live, original)
+
     def test_export_keeps_only_added_and_changed_bindings(self):
         with tempfile.TemporaryDirectory() as folder:
             folder = Path(folder); current, system, output = folder/'current.xml', folder/'system.xml', folder/'out.json'

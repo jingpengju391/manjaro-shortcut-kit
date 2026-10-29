@@ -152,6 +152,19 @@ def reset(path):
     subprocess.run(['xfconf-query', '-c', CHANNEL, '-p', path, '--reset'], check=True)
 
 
+def window_bindings():
+    """Read live properties: xfconfd's XML may not have been flushed yet."""
+    paths = subprocess.check_output(['xfconf-query', '-c', CHANNEL, '-l'], text=True).splitlines()
+    prefix = '/xfwm4/custom/'
+    result = {}
+    for path in paths:
+        if path.startswith(prefix) and '/' not in path[len(prefix):] and path != prefix + 'override':
+            value = query(path)
+            if value is not None:
+                result[path] = value
+    return result
+
+
 def desktop():
     name = os.environ.get('XDG_CURRENT_DESKTOP', '').upper()
     if 'GNOME' in name:
@@ -231,6 +244,12 @@ def import_bundle(bundle_path, conflict='skip', dry_run=False, home=None, state_
     home = Path(home or Path.home())
     changes, skipped, backup = [], [], []
     file_backup = []
+    window_items = [item for item in bundle['shortcuts'] if item['group'] == 'xfwm4']
+    actions = [item['command'] for item in window_items if item['command']]
+    if len(actions) != len(set(actions)):
+        raise RuntimeError('迁移包中同一 Xfwm 动作对应多个快捷键；请先为每个动作保留一个绑定。')
+    current_windows = window_bindings() if window_items else {}
+    removals = {}
     autostart = None
     if bundle.get('super_tap'):
         if os.environ.get('XDG_SESSION_TYPE') == 'wayland':
@@ -253,13 +272,26 @@ def import_bundle(bundle_path, conflict='skip', dry_run=False, home=None, state_
     for item in bundle['shortcuts']:
         path = '/%s/custom/%s' % (item['group'], item['key'])
         wanted, existing = native(item['command'], home), query(path)
-        if existing == wanted:
+        duplicates = {old_path: value for old_path, value in current_windows.items()
+                      if wanted and value == wanted and old_path != path} if item['group'] == 'xfwm4' else {}
+        if duplicates and conflict == 'skip':
+            skipped.append((path, '同一窗口动作已有绑定：' + ', '.join(duplicates), wanted))
             continue
-        if existing is not None and conflict == 'skip':
+        if existing is not None and existing != wanted and conflict == 'skip':
             skipped.append((path, existing, wanted))
             continue
+        removals.update(duplicates)
+        if existing == wanted and not duplicates:
+            continue
+        # Reapply even an unchanged desired binding after removing its duplicates,
+        # so the running window manager receives a shortcut-added notification.
         changes.append((path, wanted))
         backup.append({'path': path, 'value': existing})
+    saved_paths = {entry['path'] for entry in backup}
+    for path, value in removals.items():
+        if path not in saved_paths:
+            backup.append({'path': path, 'value': value})
+        print('移除重复窗口绑定：%s → %s' % (path, value))
     for path, value in changes:
         print('快捷键：%s → %s' % (path, value))
     overrides = []
@@ -284,7 +316,11 @@ def import_bundle(bundle_path, conflict='skip', dry_run=False, home=None, state_
     if autostart:
         autostart.parent.mkdir(parents=True, exist_ok=True)
         autostart.write_text(content)
+    for path in removals:
+        reset(path)
     for path, value in changes:
+        if path in current_windows and current_windows[path] == value and path not in removals:
+            reset(path)
         set_value(path, value)
     for path in overrides:
         set_value(path, 'true', 'bool')
